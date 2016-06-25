@@ -1,0 +1,146 @@
+---
+title: "PA1_template"
+author: "Matt Zapf"
+date: "June 24, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```
+#Reproducible Research -Peer Assessment 1
+This is an R Markdown document for peer assessment 1 of Coursera's Reproducible Research course.
+
+
+Load packages
+```
+
+```{r echo=TRUE}
+library(ggplot2)
+```
+```
+Load and process the data
+```
+```{r echo=TRUE}
+data<-read.table('activity.csv',sep= ",",header=TRUE, na.strings ="NA", colClasses = c('integer','Date','factor'))
+```
+```
+Remove rows with NA
+```
+```{r data, echo=TRUE}
+data2<-na.omit(data)
+```
+```
+### Whatis the mean total number of steps taken per day?
+```
+```{r data2,echo=TRUE}
+totalsteps<-tapply(data2$steps,data2$date,FUN=sum)
+plot<-ggplot(data2, aes(date,steps)) + geom_bar(stat="identity")+
+  labs(title ="Histogram of Total Number of Steps Taken per Day",x="Date", y ="Total Number of Steps")
+print(plot)
+```
+```
+Mean total number of steps per day:
+```
+```{r totalsteps, echo=TRUE}
+mean(totalsteps)
+```
+```
+Median total number of steps per day :
+```
+```{r totalstepsmedian, echo=TRUE}
+median(totalsteps)
+```
+```
+###What is the average daily activity pattern?
+```
+```{r data2average, echo=TRUE}
+
+average<-aggregate(data2$steps,list(interval = as.numeric(as.character(data2$interval))), FUN = "mean")
+names(average)[2]<-"Avg.Steps"
+
+
+plot2<-ggplot(average,aes(interval,Avg.Steps)) +geom_line(color="blue", size = 0.7) + labs(title = "Time Series Plot of the 5-minute Intervals", x=" 5-minute intervals",y="Average Number of Steps Taken")
+print(plot2)
+```
+```
+Which 5-minute interval, on average across all days, contains the most steps?
+```
+```{r average, echo=TRUE}
+average[average$Avg.Steps==max(average$Avg.Steps),]
+```
+```
+Total numer of incomplete cases
+```
+```{r datacomplete, echo=TRUE}
+sum(!complete.cases(data))
+```
+```
+Imputing missing values by using mean for that 5-minute interval.
+```
+```{r data2impute, echo=TRUE}
+imputeddata<-data2
+for (i in 1:nrow(imputeddata)){
+     if (is.na(imputeddata$steps[i])){
+         imputeddata$steps[i] <- average[which(imputeddata$interval[i]== average$interval),]$Avg.Steps
+     }
+}
+```
+```
+Check that all the missing values have been filled in.
+```
+
+```{r imputeddata, echo=TRUE}
+sum(!complete.cases(imputeddata))
+```
+```
+Histogram of total number of stepes taken each day following missing value imputation.
+````
+```{r imputeddataplot, echo=TRUE}
+plot3<-ggplot(imputeddata,aes(date,steps)) +geom_bar(stat ="identity") + labs(title ="Histogram of Total Number of Steps Taken Each Day (Imputed Data)",x ="Date",y="Total Number of Steps")
+print(plot3)
+
+totalstepsimputed<-tapply(imputeddata$steps,imputeddata$date,FUN =sum)
+mean(totalstepsimputed)
+```
+```
+Median total number of steps takeng per day imputed dataset
+```
+```{r totalstepsimputed, echo=TRUE}
+median(totalstepsimputed)
+```
+```
+Compare means and medians : both means are the same while the new median is greater than the old median.
+
+Create factor variables for date being weekday or weekend.
+```
+```{r imputeddataweekday, echo= TRUE}
+imputeddata$weekdays<-factor(format(imputeddata$date,"%A"))
+levels(imputeddata$weekdays)
+```
+
+```{r imputeddatalevels, echo=TRUE}
+levels(imputeddata)<-list(weekday= c("Monday","Tuesday","Wednesday","Thursday","Friday"),
+                          weekend=c("Saturday","Sunday"))
+levels(imputeddata$weekdays)
+
+table(imputeddata$weekdays)
+```
+```
+Graphing panel plots containing time series plot of each 5-minute interval and the average number of steps taken, averaged across all days, split into weekdays and weekends.
+```
+```{r imputeddatanewaverage,echo=TRUE}
+newaverage<-aggregate(imputeddata$steps,
+                      list(interval = as.numeric(as.character(imputeddata$interval)),
+                      weekdays = imputeddata$weekdays),
+                      FUN ="mean")
+names(newaverage)[3]<-"MeanofSteps"
+library(lattice)
+plot4<-xyplot(newaverage$MeanofSteps ~ newaverage$interval| newaverage$weekdays,
+            layout =c(1,2),type ="l",
+            xlab ="Interval", ylab = "Number of Steps")
+print(plot4)
+```
+

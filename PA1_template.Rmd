@@ -39,7 +39,7 @@ data2<-na.omit(data)
 ```
 ### What is the mean total number of steps taken per day?
 ```
-```{r data2,echo=TRUE,results='hold',fig.keep='high',fig.show='hold',fig.path='figure/data2-1.png'}
+```{r data2,echo=TRUE,results='hold',fig.keep='high',fig.show='hold',fig.path='figure/'}
 totalsteps<-tapply(data2$steps,data2$date,FUN=sum)
 plot<-ggplot(data2, aes(date,steps)) + geom_bar(stat="identity")+
   labs(title ="Histogram of Total Number of Steps Taken per Day",x="Date", y ="Total Number of Steps")
@@ -103,7 +103,7 @@ sum(!complete.cases(imputeddata))
 ```
 Histogram of total number of stepes taken each day following missing value imputation.
 ````
-```{r imputeddataplot, echo=TRUE}
+```{r imputeddataplot, echo=TRUE,results='hold',fig.keep='high',fig.show='hold',fig.path='figure/'}
 plot3<-ggplot(imputeddata,aes(date,steps)) +geom_bar(stat ="identity") + labs(title ="Histogram of Total Number of Steps Taken Each Day (Imputed Data)",x ="Date",y="Total Number of Steps")
 print(plot3)
 
@@ -136,7 +136,7 @@ table(imputeddata$weekdays)
 ```
 Graphing panel plots containing time series plot of each 5-minute interval and the average number of steps taken, averaged across all days, split into weekdays and weekends.
 ```
-```{r imputeddatanewaverage,echo=TRUE}
+```{r imputeddatanewaverage,echo=TRUE,results='hold',fig.keep='high',fig.show='hold',fig.path='figure/'}
 newaverage<-aggregate(imputeddata$steps,
                       list(interval = as.numeric(as.character(imputeddata$interval)),
                       weekdays = imputeddata$weekdays),

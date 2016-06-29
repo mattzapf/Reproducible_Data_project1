@@ -48,7 +48,7 @@ plot<-ggplot(data2, aes(date,steps)) + geom_bar(stat="identity")+
 print(plot)
 ```
 
-![](figure/data2-1.pngdata2-1.png)<!-- -->
+![](figure/data2-1.png)<!-- -->
 ```
 Mean total number of steps per day:
 ```
@@ -85,7 +85,7 @@ plot2<-ggplot(average,aes(interval,Avg.Steps)) +geom_line(color="blue", size = 0
 print(plot2)
 ```
 
-![](figure/data2average-1.pngdata2average-1.png)<!-- -->
+![](figure/data2average-1.png)<!-- -->
 ```
 Which 5-minute interval, on average across all days, contains the most steps?
 ```
@@ -140,11 +140,7 @@ Histogram of total number of stepes taken each day following missing value imput
 ```r
 plot3<-ggplot(imputeddata,aes(date,steps)) +geom_bar(stat ="identity") + labs(title ="Histogram of Total Number of Steps Taken Each Day (Imputed Data)",x ="Date",y="Total Number of Steps")
 print(plot3)
-```
 
-![](PA1_template_files/figure-html/imputeddataplot-1.png)<!-- -->
-
-```r
 totalstepsimputed<-tapply(imputeddata$steps,imputeddata$date,FUN =sum)
 mean(totalstepsimputed)
 ```
@@ -152,6 +148,8 @@ mean(totalstepsimputed)
 ```
 ## [1] 10766.19
 ```
+
+![](figure/imputeddataplot-1.png)<!-- -->
 ```
 Median total number of steps takeng per day imputed dataset
 ```
@@ -217,5 +215,5 @@ plot4<-xyplot(newaverage$MeanofSteps ~ newaverage$interval| newaverage$weekdays,
 print(plot4)
 ```
 
-![](PA1_template_files/figure-html/imputeddatanewaverage-1.png)<!-- -->![](PA1_template_files/figure-html/imputeddatanewaverage-2.png)<!-- -->![](PA1_template_files/figure-html/imputeddatanewaverage-3.png)<!-- -->![](PA1_template_files/figure-html/imputeddatanewaverage-4.png)<!-- -->
+![](figure/imputeddatanewaverage-1.png)![](figure/imputeddatanewaverage-2.png)![](figure/imputeddatanewaverage-3.png)![](figure/imputeddatanewaverage-4.png)
 
